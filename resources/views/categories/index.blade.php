@@ -1,6 +1,9 @@
 @extends('layouts.app')
 @section('content')
-//index de categorias
+<!--index de categorias-->
+
+
+
 
 <div class="container">
 
@@ -13,6 +16,12 @@
     <h5 class="card-title">Special title treatment</h5>
     <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
     <a href="{{ route('categories.create') }}" class="btn btn-primary">AGREGAR</a>
+
+
+    {!!Form::open(['method'=>'GET','route'=>'categories.index'])!!}
+       {!!Form::text('filter',null,['class'=>'form-control',
+       'placeholder'=>'Buscar nombre categoria'])!!}
+   {!!Form::close()!!}
 
     <!--crear una tabla -->
     <hr/>
@@ -28,7 +37,20 @@
             <td>{{ $category->id}}</td>
             <td>{{ $category->name}}</td>
             <td>{{ $category->slug}}</td>
-            <td></td>
+            <td>
+
+            {!!Form::open(['route'=>['categories.destroy',$category],
+                    'method'=>'DELETE'
+                    'onsubmit'=>'return confirm("Estas seguro que quieres eliminar ?")'
+                    ])!!}
+
+             <a href="{{route('categories.edit',$category)}}">EDITAR</a>
+
+          {!! Form::submit('ELIMINAR',['class'=>'btn-danger'])!!}
+           {!!Form::close()!!}       
+
+
+            </td>
         </tr>
     @empty
     <tr><td colspan="4">NO HAY REGISTROS</td></tr>

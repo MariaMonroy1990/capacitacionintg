@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Catalogs;
 
 use App\Core\Eloquent\Category;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\CategoryRequest;
+use Facades\App\Core\Facades\AlertCustom;
+
 
 class CategoryController extends Controller
 {
@@ -17,7 +20,11 @@ class CategoryController extends Controller
     {
         //return "Hola";
        //dd(request());
-       $categories=Category::paginate(1);
+
+       //AlertCustom::success('inicio');
+       $categories=
+         Category::where('name','ILIKE',"%".request()->get('filter')."%")
+         ->paginate(3);
        return view('categories.index',compact('categories'));
      /*
        $categories=Category::all();
@@ -44,9 +51,26 @@ class CategoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
-        //
+        //dd(request);
+
+        // el FILLEABLE esta en Category
+        // todo lo que venga del formulario va hacer maching en el filleable de mi modelo de base de datos , pero no es recomendable hacer si en el filleable 
+        //tengo data sencible
+       // Category::create($request->all()); 
+       
+       
+       // de todo lo que venga informacion del formulario solo acepto estos campos
+       // Category::create($request->only(['name','description']));
+
+      // solo las reglas que pasaron la validacion
+        Category::create($request->validated());
+        AlertCustom::success('Ingresado correctamente');
+
+         return redirect()->route('categories.index');// redirecciono a un ruta
+        // return view('categorties.index');// redirecciono a un ruta
+
     }
 
     /**
@@ -68,7 +92,7 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-        //
+        return view('categories.edit',compact('category'));
     }
 
     /**
@@ -78,9 +102,13 @@ class CategoryController extends Controller
      * @param  \App\Core\Eloquent\Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Category $category)
+    public function update(CategoryRequest $request, Category $category)
     {
-        //
+        $category->fill($request->validate());
+        $category->save();
+        AlertCustom::success('Actualizado correctamente');
+
+        return redirect()->route('categories.index');
     }
 
     /**
@@ -91,6 +119,8 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        //
+        $category->delete();
+        AlertCustom::success('Eliminado correctamente');
+        return redirect()->route('categories.index');
     }
 }

@@ -1,13 +1,13 @@
 @extends('layouts.app')
 @section('content')
-//index de categorias
+<!--index de categorias-->
 
 <div class="container">
 
  
 <div class="card">
   <div class="card-header bg-danger text-white">
-     Ingreso de Categorias
+     Edicion de Categorias
   </div>
   <div class="card-body">
     <h5 class="card-title">Special title treatment</h5>
@@ -15,17 +15,14 @@
     <!--<a href="{{ route('categories.create') }}" class="btn btn-primary">AGREGAR</a>  -->   
     <a href="{{ route('categories.index') }}" class="btn btn-primary">REGRESAR</a> 
 
-    {!! Form::open(['route'=>'categories.store','method'=>'POST'])!!}
-        {!! Field::text('name',null,
-        ['label'=>'Nombre','placeholder'=>'Ingrese el nombre'])!!}
+  <!--creación de formulario para actualizar-->
+  {!! Form::open(['route'=>['categories.update','$category'],'method'=>'PUT']) !!}
 
-        {!! Field::textarea('description',null,
-        ['label'=>'Descripcion','placeholder'=>'Ingrese la descripcion'])!!}
+{!! Field::text('name',$category->name,['label'=>'Nombres','placeholder'=>'Ingrese el Nombre'])!!}
+{!! Field::textarea('description',$category->description,['label'=>'Descripión','placeholder'=>'Ingrese la Desripción'])!!}
+{!! Form::submit('Grabar',['class'=>'btn btn-danger']) !!}
 
-        {!!Form::submit('GUARDAR',['class'=>'btn btn-primary'])!!}
-
-    {!! Form::close() !!}
-
+{!! Form::close() !!}
   </div>
 </div>
 
